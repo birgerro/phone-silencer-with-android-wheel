@@ -16,12 +16,12 @@ import android.widget.CheckBox;
 import android.widget.Toast;
 
 public class PhoneSilencer extends Activity implements DurationPicker.OnDurationChangedListener, TimePicker.OnTimeChangedListener {
-	private DurationPicker duration;
-	private TimePicker endpoint;
-	private Button button;
-	private CheckBox allow_vibration;
-	private boolean duration_mode;
-	
+    private DurationPicker duration;
+    private TimePicker endpoint;
+    private Button button;
+    private CheckBox allow_vibration;
+    private boolean duration_mode;
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,90 +48,90 @@ public class PhoneSilencer extends Activity implements DurationPicker.OnDuration
     }
     
     public void buttonClicked(View view) {
-    	
-    	printSilencePeriode();
-    	
-    	if ( allow_vibration.isChecked() ) {
-    		((AudioManager) getSystemService(Context.AUDIO_SERVICE)).setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
-    	} else {
-    		((AudioManager) getSystemService(Context.AUDIO_SERVICE)).setRingerMode(AudioManager.RINGER_MODE_SILENT);
-    	}
-    	
+
+        printSilencePeriode();
+
+        if ( allow_vibration.isChecked() ) {
+            ((AudioManager) getSystemService(Context.AUDIO_SERVICE)).setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+        } else {
+            ((AudioManager) getSystemService(Context.AUDIO_SERVICE)).setRingerMode(AudioManager.RINGER_MODE_SILENT);
+        }
+
         Calendar end = Calendar.getInstance();
-    	if ( duration_mode ) {
-    		end.add(Calendar.HOUR_OF_DAY, duration.getHours());
-    		end.add(Calendar.MINUTE, duration.getMinutes());
-    	} else {
-    		end.set(Calendar.HOUR_OF_DAY, endpoint.getCurrentHour());
-    		end.set(Calendar.MINUTE, endpoint.getCurrentMinute());
-    		end.set(Calendar.SECOND, 0);
-        	Calendar now = Calendar.getInstance();
+        if ( duration_mode ) {
+            end.add(Calendar.HOUR_OF_DAY, duration.getHours());
+            end.add(Calendar.MINUTE, duration.getMinutes());
+        } else {
+            end.set(Calendar.HOUR_OF_DAY, endpoint.getCurrentHour());
+            end.set(Calendar.MINUTE, endpoint.getCurrentMinute());
+            end.set(Calendar.SECOND, 0);
+            Calendar now = Calendar.getInstance();
             if ( end.before(now) ){
-            	end.roll(Calendar.DATE, +1);
+                end.roll(Calendar.DATE, +1);
             }
-    	}
-    	
-		Intent intent = new Intent(getBaseContext(), ResetRingerMode.class);
+        }
+
+        Intent intent = new Intent(getBaseContext(), ResetRingerMode.class);
         PendingIntent sender = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         
         // Get the AlarmManager service
         ((AlarmManager) getSystemService(ALARM_SERVICE)).set(AlarmManager.RTC_WAKEUP, end.getTimeInMillis(), sender);
 
-    	finish();
+        finish();
     }
     
     private String format(int value) {
-    	return String.format("%02d", value);
+        return String.format("%02d", value);
     }
 
     private void printSilencePeriode() {
-    	String text = "The phone will be silenced";
-    	if ( duration_mode ) {
-    		text += " for";
-			int hours = duration.getHours();
-    		if ( hours > 0 ) {
-    			text += " " + hours + (hours > 1 ? " hours" : " hour");
-    		}
-			int minutes = duration.getMinutes();
-    		if ( minutes > 0 ) {
-    			text += " " + minutes + (minutes > 1 ? " minutes" : " minute");
-    		}
-    	} else {
-    		text += " until " + format(endpoint.getCurrentHour()) + ":" + format(endpoint.getCurrentMinute());
-    	}
-		Toast.makeText(getBaseContext(), text, Toast.LENGTH_SHORT).show();    	
+        String text = "The phone will be silenced";
+        if ( duration_mode ) {
+            text += " for";
+            int hours = duration.getHours();
+            if ( hours > 0 ) {
+                text += " " + hours + (hours > 1 ? " hours" : " hour");
+            }
+            int minutes = duration.getMinutes();
+            if ( minutes > 0 ) {
+                text += " " + minutes + (minutes > 1 ? " minutes" : " minute");
+            }
+        } else {
+            text += " until " + format(endpoint.getCurrentHour()) + ":" + format(endpoint.getCurrentMinute());
+        }
+        Toast.makeText(getBaseContext(), text, Toast.LENGTH_SHORT).show();
     }
     
     // For DurationPicker.OnDurationChangedListener interface:
-	public void onDurationChanged(DurationPicker which, int num_hours, int num_minutes) {
-		duration_mode = true;
-		if ( num_hours == 0 && num_minutes == 0 ){
-			onTimeChanged(endpoint, endpoint.getCurrentHour(), endpoint.getCurrentMinute());
-		} else {
-			String text = "Silence phone for";
-			if ( num_hours > 0 ){
-				text += " " + num_hours + " h";
-			}
-			if ( num_minutes > 0 ){
-				text += " " + format(num_minutes) + " min";
-			}
-			button.setText(text);
-			button.invalidate();
-		}
-	}
+    public void onDurationChanged(DurationPicker which, int num_hours, int num_minutes) {
+        duration_mode = true;
+        if ( num_hours == 0 && num_minutes == 0 ){
+            onTimeChanged(endpoint, endpoint.getCurrentHour(), endpoint.getCurrentMinute());
+        } else {
+            String text = "Silence phone for";
+            if ( num_hours > 0 ){
+                text += " " + num_hours + " h";
+            }
+            if ( num_minutes > 0 ){
+                text += " " + format(num_minutes) + " min";
+            }
+            button.setText(text);
+            button.invalidate();
+        }
+    }
 
-	// For TimePicker.OnTimeChangedListener interface:
-	public void onTimeChanged(TimePicker view, int hour, int minute) {
-		duration_mode = false;
-		button.setText("Silence phone until " + format(hour) + ":" + format(minute));
-		button.invalidate();
-	}
-	
-	// For BroadcastReceiver:
-	public static class ResetRingerMode extends BroadcastReceiver {
-    	@Override
-    	public void onReceive(Context context, Intent intent) {
-	    	((AudioManager) context.getSystemService(Context.AUDIO_SERVICE)).setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-    	}
-	}
+    // For TimePicker.OnTimeChangedListener interface:
+    public void onTimeChanged(TimePicker view, int hour, int minute) {
+        duration_mode = false;
+        button.setText("Silence phone until " + format(hour) + ":" + format(minute));
+        button.invalidate();
+    }
+
+    // For BroadcastReceiver:
+    public static class ResetRingerMode extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ((AudioManager) context.getSystemService(Context.AUDIO_SERVICE)).setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+        }
+    }
 }
