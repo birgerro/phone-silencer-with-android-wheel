@@ -1,2 +1,4 @@
 include ':PhoneSilencerWithAndroidWheel'
-include ':..:Android-Wheel:android-wheel'
+//includeFlat ':Android-Wheel:wheel'
+include ':Android-Wheel'
+project(':Android-Wheel').projectDir = file('../Android-Wheel/wheel')
