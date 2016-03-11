@@ -88,11 +88,13 @@ public class PhoneSilencer extends Activity implements DurationPicker.OnDuration
     	String text = "The phone will be silenced";
     	if ( duration_mode ) {
     		text += " for";
-    		if ( duration.getHours() > 0 ) {
-    			text += " " + duration.getHours() + " h";
+			int hours = duration.getHours();
+    		if ( hours > 0 ) {
+    			text += " " + hours + (hours > 1 ? " hours" : " hour");
     		}
-    		if ( duration.getMinutes() > 0 ) {
-    			text += " " + duration.getMinutes() + " min";
+			int minutes = duration.getMinutes();
+    		if ( minutes > 0 ) {
+    			text += " " + minutes + (minutes > 1 ? " minutes" : " minute");
     		}
     	} else {
     		text += " until " + format(endpoint.getCurrentHour()) + ":" + format(endpoint.getCurrentMinute());
