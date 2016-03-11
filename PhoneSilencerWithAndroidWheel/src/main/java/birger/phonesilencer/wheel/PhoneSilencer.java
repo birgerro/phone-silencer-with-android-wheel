@@ -29,6 +29,7 @@ public class PhoneSilencer extends Activity implements DurationPicker.OnDuration
         setContentView(R.layout.main);
         
         button = (Button) findViewById(R.id.button);
+        button.setTransformationMethod(null);
         allow_vibration = (CheckBox) findViewById(R.id.allow_vibration);
         
         duration = (DurationPicker) findViewById(R.id.duration_picker);
