@@ -7,7 +7,7 @@ android {
     defaultConfig {
         applicationId "birger.phonesilencer.wheel"
         minSdkVersion 10
-        targetSdkVersion 22
+        targetSdkVersion 18 // Beginning with API 19 (KITKAT) alarm delivery became inexact
     }
 
     buildTypes {
